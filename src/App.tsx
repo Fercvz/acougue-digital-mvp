@@ -13,6 +13,7 @@ import Admin from "./Admin";
 import Kiosk from "./Kiosk";
 import { Butcher, Board, Tracking } from "./Operations";
 import { api, type ApiState } from "./model";
+import { isPagesDemo } from "./environment";
 type Area = "tablet" | "butcher" | "board" | "manager";
 export default function App() {
   const [state, setState] = useState<ApiState | null>(null),
@@ -39,7 +40,9 @@ export default function App() {
       window.removeEventListener("hashchange", f);
     };
   }, [refresh]);
-  const token = location.pathname.match(/^\/acompanhar\/([^/]+)/)?.[1];
+  const token =
+    location.pathname.match(/^\/acompanhar\/([^/]+)/)?.[1] ||
+    area.match(/^acompanhar\/([^/]+)/)?.[1];
   if (token) return <Tracking token={token} />;
   if (!state)
     return (
@@ -54,7 +57,11 @@ export default function App() {
         ) : (
           <>
             <WifiOff />
-            <p>Estamos sem conexão com o açougue.</p>
+            <p>
+              {isPagesDemo
+                ? "Não foi possível abrir os dados locais. Permita o armazenamento deste site no navegador."
+                : "Estamos sem conexão com o açougue."}
+            </p>
             <button className="primary" onClick={() => void refresh()}>
               Tentar novamente
             </button>
@@ -68,8 +75,11 @@ export default function App() {
     >
       <div className="presentation-bar">
         <div className="presentation-label">
-          <span className="live-dot" /> APRESENTAÇÃO{" "}
-          <span>• Açougue Digital</span>
+          <span className="live-dot" />{" "}
+          {isPagesDemo ? "DEMONSTRAÇÃO" : "APRESENTAÇÃO"}{" "}
+          <span>
+            {isPagesDemo ? "• Dados neste navegador" : "• Açougue Digital"}
+          </span>
         </div>
         <nav aria-label="Telas da apresentação">
           {(
@@ -92,9 +102,21 @@ export default function App() {
         </nav>
         <span className={`connection ${connected ? "" : "lost"}`}>
           {connected ? <Wifi size={14} /> : <WifiOff size={14} />}
-          <span>{connected ? "Conectado" : "Sem conexão"}</span>
+          <span>
+            {connected
+              ? isPagesDemo
+                ? "Demonstração local"
+                : "Conectado"
+              : "Sem conexão"}
+          </span>
         </span>
       </div>
+      {isPagesDemo && (
+        <div className="pages-demo-notice">
+          Demonstração: pedidos e alterações ficam apenas neste navegador. Sem
+          envio de WhatsApp.
+        </div>
+      )}
       {!connected && (
         <div className="offline-banner" role="alert">
           <WifiOff size={20} />

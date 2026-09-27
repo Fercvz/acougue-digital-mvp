@@ -8,6 +8,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { Photo } from "./ui";
+import { isPagesDemo } from "./environment";
 import { Money } from "./Money";
 import { isSteakPreparation } from "../shared/preparation";
 import {
@@ -265,6 +266,7 @@ export function Checkout({
         <input
           type="checkbox"
           checked={optIn}
+          disabled={isPagesDemo}
           onChange={(e) => setOptIn(e.target.checked)}
         />
         <Smartphone size={22} />
@@ -272,6 +274,11 @@ export function Checkout({
           <strong>Receber no WhatsApp quando estiver pronto</strong>
         </span>
       </label>
+      {isPagesDemo && (
+        <p className="privacy-note">
+          Demonstração: nenhum telefone é coletado e nenhuma mensagem é enviada.
+        </p>
+      )}
       {optIn && (
         <>
           <label className="field-label" htmlFor="phone">

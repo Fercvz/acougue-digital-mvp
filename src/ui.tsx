@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Beef, Smartphone, X } from "lucide-react";
 import type { ApiState, Order } from "./model";
+import { photoUrl } from "./environment";
 export function Photo({
   src,
   alt,
@@ -21,7 +22,7 @@ export function Photo({
   return src && !failed ? (
     <img
       className={className}
-      src={src}
+      src={photoUrl(src)}
       alt={alt}
       onError={() => setFailed(true)}
       loading="lazy"
@@ -60,7 +61,7 @@ export function Brand({ state }: { state: ApiState }) {
   return (
     <div className="brand">
       {state.store.logo ? (
-        <img src={state.store.logo} alt="" />
+        <img src={photoUrl(state.store.logo)} alt="" />
       ) : (
         <span className="brand-mark">
           <Beef size={29} />

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Brand, labels, Modal, Notification } from "./ui";
 import { api, currency, weightLabel, type ApiState, type Order } from "./model";
+import { isPagesDemo } from "./environment";
 export function Butcher({
   state,
   refresh,
@@ -380,7 +381,9 @@ export function Tracking({ token }: { token: string }) {
         </h2>
         <p>
           {offline
-            ? "Confira a conexão e o endereço do QR code."
+            ? isPagesDemo
+              ? "O pedido de demonstração fica apenas no navegador em que foi criado. Volte a esse navegador para acompanhar."
+              : "Confira a conexão e o endereço do QR code."
             : "Só um instante."}
         </p>
       </div>
@@ -390,6 +393,11 @@ export function Tracking({ token }: { token: string }) {
     recipes = data.recipes || [];
   return (
     <main className="tracking">
+      {isPagesDemo && (
+        <div className="pages-demo-notice">
+          Demonstração: acompanhamento apenas neste navegador.
+        </div>
+      )}
       <header>
         <span className="brand-mark">
           <Beef />

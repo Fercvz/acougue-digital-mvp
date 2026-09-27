@@ -1,4 +1,4 @@
-import type { Recipe } from "../shared/types.js";
+import type { Recipe } from "./types.js";
 
 /** Editable examples for the store's first presentation. */
 export const barbecueKits: Recipe[] = [

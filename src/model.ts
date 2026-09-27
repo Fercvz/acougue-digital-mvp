@@ -1,3 +1,4 @@
+import { isPagesDemo } from "./environment";
 export type Category = "bovina" | "frango" | "suina" | "embutidos" | "miudos";
 export interface Product {
   id: string;
@@ -108,9 +109,17 @@ export async function api<T = unknown>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  if (isPagesDemo) {
+    const { demoApi } = await import("./demo");
+    return demoApi<T>(path, options);
+  }
+  const headers = new Headers(options.headers);
+  if (!(options.body instanceof FormData) && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
   const response = await fetch(path, {
     ...options,
-    headers: { "Content-Type": "application/json", ...options.headers },
+    headers,
   });
   const result = await response
     .json()

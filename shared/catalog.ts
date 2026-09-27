@@ -1,4 +1,4 @@
-import type { Product } from "../shared/types.js";
+import type { Product } from "./types.js";
 
 /** Editable demonstration catalog. Prices are examples, not live store quotations. */
 export const products: Product[] = [

@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { Brand, Modal, Notification, RecipePhoto } from "./ui";
+import { isPagesDemo, photoUrl } from "./environment";
 import { ChickenIcon, PigIcon, SausageIcon } from "./CategoryIcons";
 import { DailyOffers, ProductCard } from "./ProductOffers";
 import { Checkout, ProductConfig, type Receipt } from "./OrderForms";
@@ -155,7 +156,11 @@ export default function Kiosk({
           <span className="receipt-check">
             <Check size={40} />
           </span>
-          <p>Acompanhe seu pedido pelo número no painel ou no celular.</p>
+          <p>
+            {isPagesDemo
+              ? "Pedido de demonstração. Abra a aba Açougueiro para testar o atendimento."
+              : "Acompanhe seu pedido pelo número no painel ou no celular."}
+          </p>
           <div className="receipt-card">
             <div>
               <span>SEU PEDIDO</span>
@@ -173,8 +178,16 @@ export default function Kiosk({
                 src={receipt.qrDataUrl}
                 alt={`QR code para acompanhar pedido ${receipt.order.ticket}`}
               />
-              <strong>Escaneie e leve com você</strong>
-              <span>Pedido, receitas e lista de compras</span>
+              <strong>
+                {isPagesDemo
+                  ? "Acompanhamento da demonstração"
+                  : "Escaneie e leve com você"}
+              </strong>
+              <span>
+                {isPagesDemo
+                  ? "Abra o link neste navegador. O pedido não é compartilhado com outros aparelhos."
+                  : "Pedido, receitas e lista de compras"}
+              </span>
               <a href={receipt.trackingUrl} target="_blank" rel="noreferrer">
                 Abrir acompanhamento <ArrowRight size={15} />
               </a>
@@ -296,7 +309,7 @@ export default function Kiosk({
                     Fotos de referência. O corte e a apresentação podem variar.
                     Valores do pedido são estimativas.{" "}
                     <a
-                      href="/fotos/creditos.html"
+                      href={photoUrl("/fotos/creditos.html")}
                       target="_blank"
                       rel="noreferrer"
                     >

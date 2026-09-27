@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { api as request } from "./model";
+import { isPagesDemo, photoUrl } from "./environment";
 import "./admin.css";
 
 type AdminProps = { state: any; onRefresh: () => void };
@@ -83,19 +85,10 @@ function Icon({ name }: { name: string }) {
 }
 
 async function api(path: string, method: string, body: any) {
-  const response = await fetch(path, {
+  return request(path, {
     method,
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok)
-    throw new Error(
-      result.error ||
-        result.message ||
-        "Não foi possível salvar. Tente novamente.",
-    );
-  return result;
 }
 
 function Photo({
@@ -108,7 +101,11 @@ function Photo({
   className?: string;
 }) {
   return src ? (
-    <img className={`admin-photo ${className}`} src={src} alt={label} />
+    <img
+      className={`admin-photo ${className}`}
+      src={photoUrl(src)}
+      alt={label}
+    />
   ) : (
     <div className={`admin-photo admin-photo-empty ${className}`}>
       <Icon name="media" />
@@ -1245,18 +1242,23 @@ function StoreEditor({
       <div className="admin-settings-section">
         <h4>Acompanhamento pelo QR code</h4>
         <label className="admin-field">
-          <span>Endereço acessível pelo celular</span>
+          <span>
+            {isPagesDemo
+              ? "Endereço da demonstração"
+              : "Endereço acessível pelo celular"}
+          </span>
           <input
             type="url"
             required
             value={draft.publicBaseUrl}
+            disabled={isPagesDemo}
             onChange={(event) => change("publicBaseUrl", event.target.value)}
             placeholder="https://pedidos.seumercado.com.br"
           />
           <small>
-            O QR code usa este endereço. Para a apresentação, pode ser o
-            endereço deste computador na rede Wi-Fi. Um endereço local só abre
-            em aparelhos da mesma rede.
+            {isPagesDemo
+              ? "Cada navegador tem seus próprios pedidos. Acompanhe pelo link no mesmo navegador em que o pedido foi criado."
+              : "O QR code usa este endereço. Para a apresentação, pode ser o endereço deste computador na rede Wi-Fi. Um endereço local só abre em aparelhos da mesma rede."}
           </small>
         </label>
       </div>
@@ -1660,15 +1662,10 @@ export default function Admin({ state, onRefresh }: AdminProps) {
                     const body = new FormData();
                     body.append("photo", photoFile);
                     body.append("folder", folder);
-                    const response = await fetch("/api/media", {
+                    await request("/api/media", {
                       method: "POST",
                       body,
                     });
-                    const result = await response.json();
-                    if (!response.ok)
-                      throw new Error(
-                        result.error || "Não foi possível enviar a foto.",
-                      );
                     setPhotoFile(null);
                     (event.target as HTMLFormElement).reset();
                     onRefresh();
@@ -1764,14 +1761,18 @@ export default function Admin({ state, onRefresh }: AdminProps) {
               <span
                 className={`admin-status ${whatsappReady ? "" : "pending"}`}
               >
-                {whatsappReady
-                  ? "Integração configurada"
-                  : "Aguardando configuração da conta"}
+                {isPagesDemo
+                  ? "Disponível na versão com servidor"
+                  : whatsappReady
+                    ? "Integração configurada"
+                    : "Aguardando configuração da conta"}
               </span>
               <p>
-                {whatsappReady
-                  ? "A integração está configurada. O resultado de cada envio aparece no pedido; uma falha não impede o acompanhamento pelo QR code."
-                  : "O mercado ainda precisa configurar uma conta oficial WhatsApp Business/Meta para ativar os avisos automáticos. Enquanto isso, o QR code permite acompanhar o pedido e consultar a lista de compras."}
+                {isPagesDemo
+                  ? "Avisos reais e acompanhamento entre aparelhos usam a versão com servidor. Nesta apresentação, o fluxo é testado no navegador."
+                  : whatsappReady
+                    ? "A integração está configurada. O resultado de cada envio aparece no pedido; uma falha não impede o acompanhamento pelo QR code."
+                    : "O mercado ainda precisa configurar uma conta oficial WhatsApp Business/Meta para ativar os avisos automáticos. Enquanto isso, o QR code permite acompanhar o pedido e consultar a lista de compras."}
               </p>
             </div>
           </div>

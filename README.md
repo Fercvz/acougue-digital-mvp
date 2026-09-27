@@ -2,6 +2,25 @@
 
 React + TypeScript, servidor Node.js e identidade vermelha/amarela. As quatro áreas ficam juntas para apresentar a ideia ao mercado. Não contém pagamento nem integração com balança/caixa.
 
+## Demonstração online
+
+Abra **https://fercvz.github.io/acougue-digital-mvp/**.
+
+O GitHub Pages hospeda a apresentação estática: Cliente, Açougueiro, TV e Gestão funcionam com dados salvos no navegador (IndexedDB). Pedidos e alterações persistem ao recarregar e aparecem em outras abas do mesmo navegador. Não são compartilhados com outros aparelhos ou pessoas. O modo online não coleta telefone nem envia WhatsApp; o acompanhamento/QR só encontra pedidos no navegador onde foram criados.
+
+A versão com servidor continua disponível pelos comandos abaixo e compartilha pedidos entre dispositivos. As regras e o catálogo inicial ficam em `shared/`, usados pelas duas versões.
+
+O workflow `.github/workflows/pages.yml` testa, compila e publica cada alteração da branch `main`. A fonte em **Settings → Pages** deve ser **GitHub Actions**. Publica somente `dist-pages/`, com o caminho `/acougue-digital-mvp/`; não usa o `index.html` de desenvolvimento na raiz do repositório.
+
+Para testar o mesmo build localmente:
+
+```powershell
+npm run build:pages
+npm run preview:pages
+```
+
+Abra **http://127.0.0.1:4173/acougue-digital-mvp/**. A pasta `dist-pages/` é separada da compilação com servidor (`dist/`).
+
 ## Iniciar
 
 Requer Node.js 22 ou 24 e npm. Execute `Iniciar Acougue Digital.cmd`, ou:

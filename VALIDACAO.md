@@ -68,6 +68,17 @@ O pedido A001 é dado de teste local da validação; não corresponde a venda re
 
 ## Limites da verificação
 
+### Correção da publicação no GitHub Pages — 27/09/2026
+
+- A configuração anterior publicava a raiz de `main`, que continha o `index.html` de desenvolvimento referenciando `/src/main.tsx`. Além disso, Pages não executa a API Node.js. O deploy anterior terminava com sucesso, mas não produzia um aplicativo funcional.
+- Criado workflow que executa testes e build Vite no modo `pages`, publica apenas `dist-pages/` e usa `/acougue-digital-mvp/` para scripts, estilos, fotos e créditos.
+- Apresentação estática com armazenamento IndexedDB, transações atômicas, gestão de catálogo/receitas/fotos, pedidos, recusas parciais e acompanhamento por rota hash. Catálogo, receitas e regras de domínio compartilhados com o servidor, que mantém geração criptográfica própria e armazenamento central.
+- **18 testes passaram**: 14 de integração do servidor e quatro do modo Pages. Incluem confirmação concorrente sem duplicação, recusas e retirada, proteção contra alterações inválidas, valores/receitas do kit, cadastro de fotos e ausência de coleta de contato na demonstração.
+- Prévia do build estático conferida no navegador no caminho do repositório: picanha 500 g, R$ 34,95, confirmação A001, persistência após recarregar, preparo/pronto e acompanhamento em outra aba. Esses dados existem somente na prévia local.
+- Modo Pages mostra explicitamente que os dados ficam no navegador; WhatsApp desativado e QR/acompanhamento limitado ao mesmo navegador. Não há credenciais, pedidos locais do servidor nem endpoint privado publicados no bundle.
+
+### Limites operacionais
+
 - Não foi usado um celular físico para escanear o QR; o conteúdo gerado pelo servidor e o endereço local foram verificados.
 - WhatsApp não possui conta/credenciais configuradas; nenhum envio real foi feito. A UI informa isso quando a opção é escolhida.
 - PostgreSQL possui adaptador, mas não foi conectado a uma instância nesta entrega. A demonstração testada usa armazenamento JSON local no servidor.
